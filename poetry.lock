@@ -297,6 +297,25 @@ files = [
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
+name = "colander"
+version = "2.0"
+description = "A simple schema-based serialization and deserialization library"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "colander-2.0-py3-none-any.whl", hash = "sha256:cb6b929fd0e79cdd3d310d3229e8f7884bd4fddd5cbf1d882063a6fb283b272b"},
+    {file = "colander-2.0.tar.gz", hash = "sha256:419cd68178d2ee6ee4cae5d5cb1830725634b0a2840917156e89eb2592237ef3"},
+]
+
+[package.dependencies]
+iso8601 = "*"
+translationstring = "*"
+
+[package.extras]
+docs = ["Sphinx (>=1.8.1)", "docutils", "pylons-sphinx-themes (>=1.0.9)", "setuptools"]
+testing = ["babel", "coverage (>=5.0)", "pytest", "pytest-cov"]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -654,6 +673,17 @@ parallel = ["ipyparallel"]
 qtconsole = ["qtconsole"]
 test = ["pickleshare", "pytest", "pytest-asyncio (<0.22)", "testpath"]
 test-extra = ["curio", "ipython[test]", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.23)", "pandas", "trio"]
+
+[[package]]
+name = "iso8601"
+version = "2.1.0"
+description = "Simple module to parse ISO 8601 dates"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "iso8601-2.1.0-py3-none-any.whl", hash = "sha256:aac4145c4dcb66ad8b648a02830f5e2ff6c24af20f4f482689be402db2429242"},
+    {file = "iso8601-2.1.0.tar.gz", hash = "sha256:6b1d3829ee8921c4301998c909f7829fa9ed3cbdac0d3b16af2d743aed1ba8df"},
+]
 
 [[package]]
 name = "isort"
@@ -2655,4 +2685,4 @@ test = ["zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5dd5a05e7881fd8020b543eba250002ae6c7ef7e987106b6b56d03dfbd6d20cf"
+content-hash = "c894ea86d24dbf05f89f2998b596ae9ed585b2e1fbf49378e8fae926160fb456"
