@@ -12,6 +12,9 @@ sqlalchemy = "^2.0.30"
 alembic = "^1.13.1"
 pyramid-jinja2 = "^2.10.1"
 psycopg2 = "^2.9.9"
+pyramid-sqlalchemy = "^1.6"
+pyramid-tm = "^2.5"
+bcrypt = "^4.1.3"
 
 
 [tool.poetry.group.test.dependencies]

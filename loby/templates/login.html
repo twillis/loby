@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <form class="col s12" method="POST" action="{{ request.route_url('login') }}">
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="username" name="username" type="text" class="validate">
+                    <label for="username">Username</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="password" name="password" type="password" class="validate">
+                    <label for="password">Password</label>
+                </div>
+            </div>
+            {% if error %}
+            <div class="row">
+                <div class="col s12 red-text">
+                    {{ error }}
+                </div>
+            </div>
+            {% endif %}
+            <button class="btn waves-effect waves-light" type="submit">Login</button>
+        </form>
+    </div>
+{% endblock %}
