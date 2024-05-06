@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid_sqlalchemy import Session
-from .models.user import User
+from .models import User
 
 
 @view_config(route_name="login", renderer="templates/login.html", request_method="GET")
