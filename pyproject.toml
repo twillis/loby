@@ -36,6 +36,7 @@ pylsp-rope = "^0.1.16"
 pyls-memestra = "^0.0.16"
 mypy = "^1.10.0"
 pyramid-debugtoolbar = "^4.12.1"
+tailwindpie = "^0.1.1"
 
 [tool.poetry.plugins."paste.app_factory"]
 main = "loby:main"

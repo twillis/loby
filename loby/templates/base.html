@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Material Design Website{% endblock %}</title>
 
-    <!-- Material Design CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ request.static_url('loby:static/style.css') }}">
 
     <!-- Additional CSS -->
     {% block styles %}
@@ -18,50 +17,59 @@
 <body>
 
     <!-- Navbar -->
-    <nav>
-        <div class="nav-wrapper">
-            <a href="#" class="brand-logo">Logo</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="/">Home</a></li>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
-            </ul>
+    <nav class="bg-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-4">
+                    <!-- Logo -->
+                    <div>
+                        <a href="#" class="flex items-center py-5 px-2 text-gray-700">
+                            <span class="font-bold">Logo</span>
+                        </a>
+                    </div>
+                    <!-- Primary Nav -->
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a href="/" class="py-5 px-3 text-gray-700 hover:text-gray-900">Home</a>
+                        <a href="/login" class="py-5 px-3 text-gray-700 hover:text-gray-900">Login</a>
+                        <a href="/about" class="py-5 px-3 text-gray-700 hover:text-gray-900">About</a>
+                        <a href="/contact" class="py-5 px-3 text-gray-700 hover:text-gray-900">Contact</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main>
-        <div class="container">
+        <div class="max-w-6xl mx-auto px-4 py-6">
             {% block content %}
+            <!-- Content will go here -->
             {% endblock %}
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="page-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col l6 s12">
-                    <h5 class="white-text">Footer Content</h5>
-                    <p class="grey-text text-lighten-4">Some text about the footer.</p>
+    <footer class="bg-gray-800 text-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="flex justify-between">
+                <div>
+                    <h5 class="text-white">Footer Content</h5>
+                    <p class="text-gray-400">Some text about the footer.</p>
                 </div>
-                <div class="col l4 offset-l2 s12">
-                    <h5 class="white-text">Links</h5>
-                    <ul>
-                        <li><a class="grey-text text-lighten-3" href="/">Home</a></li>
-                        <li><a class="grey-text text-lighten-3" href="/about">About</a></li>
-                        <li><a class="grey-text text-lighten-3" href="/contact">Contact</a></li>
+                <div>
+                    <h5 class="text-white">Links</h5>
+                    <ul class="list-none">
+                        <li><a class="text-gray-400 hover:text-gray-100" href="/">Home</a></li>
+                        <li><a class="text-gray-400 hover:text-gray-100" href="/about">About</a></li>
+                        <li><a class="text-gray-400 hover:text-gray-100" href="/contact">Contact</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Material Design JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     {% block scripts %}
-    <!-- Additional JavaScript -->
+    <!-- Tailwind does not require JavaScript, but any additional JS can go here -->
     {% endblock %}
 </body>
 </html>

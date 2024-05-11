@@ -123,3 +123,7 @@ identity*.sql
 /node_modules/
 destinations.local.json
 /*_v2*.json
+
+node_modules/
+package.json
+package-lock.json

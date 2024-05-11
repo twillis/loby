@@ -10,6 +10,7 @@ def main(global_config, **settings):
         config.include('pyramid_sqlalchemy')
         config.include("pyramid_jinja2")
         config.add_jinja2_renderer('.html')
+        config.add_static_view(name='static', path='loby:static')
         config.add_route('home', '/')
         config.add_route('login', '/login')
         config.scan(".views")
