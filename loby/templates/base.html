@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Material Design Website{% endblock %}</title>
+    <title>{% block title %} Website {% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.3/dist/htmx.min.js"></script>
 
     <link rel="stylesheet" href="{{ request.static_url('loby:static/style.css') }}">
 
@@ -17,22 +18,16 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-md">
+    <nav class=" shadow-md">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between">
                 <div class="flex space-x-4">
-                    <!-- Logo -->
-                    <div>
-                        <a href="#" class="flex items-center py-5 px-2 text-gray-700">
-                            <span class="font-bold">Logo</span>
-                        </a>
-                    </div>
-                    <!-- Primary Nav -->
+                    <a href="#" class="flex items-center py-5 px-2 text-gray-700 hover:text-gray-900 font-bold">Logo</a>
                     <div class="hidden md:flex items-center space-x-1">
-                        <a href="/" class="py-5 px-3 text-gray-700 hover:text-gray-900">Home</a>
-                        <a href="/login" class="py-5 px-3 text-gray-700 hover:text-gray-900">Login</a>
-                        <a href="/about" class="py-5 px-3 text-gray-700 hover:text-gray-900">About</a>
-                        <a href="/contact" class="py-5 px-3 text-gray-700 hover:text-gray-900">Contact</a>
+                        <a href="/" class="py-5 px-3 text-primary hover:text-accent">Home</a>
+                        <a href="/login" class="py-5 px-3 text-primary hover:text-accent">Login</a>
+                        <a href="/about" class="py-5 px-3 text-primary hover:text-accent">About</a>
+                        <a href="/contact" class="py-5 px-3 text-primary hover:text-accent">Contact</a>
                     </div>
                 </div>
             </div>
@@ -53,7 +48,7 @@
         <div class="max-w-6xl mx-auto px-4 py-6">
             <div class="flex justify-between">
                 <div>
-                    <h5 class="text-white">Footer Content</h5>
+                    <h1 class="text-white">Footer Content</h1>
                     <p class="text-gray-400">Some text about the footer.</p>
                 </div>
                 <div>
