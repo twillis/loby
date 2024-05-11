@@ -1,6 +1,7 @@
 """This is the wsgi app to be served."""
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
+from .livereload import serve as live
 
 def main(global_config, **settings):
     """Entry point for application."""

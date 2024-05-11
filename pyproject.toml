@@ -37,6 +37,11 @@ pyls-memestra = "^0.0.16"
 mypy = "^1.10.0"
 pyramid-debugtoolbar = "^4.12.1"
 tailwindpie = "^0.1.1"
+livereload = "^2.6.3"
+tornado = "<6.3.0"
+
+[tool.poetry.plugins."paste.server_runner"]
+live = "loby.livereload:serve"
 
 [tool.poetry.plugins."paste.app_factory"]
 main = "loby:main"
