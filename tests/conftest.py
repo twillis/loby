@@ -12,7 +12,6 @@ import webtest
 from loby import main
 from loby import models
 import pyramid_sqlalchemy
-
 Base = pyramid_sqlalchemy.BaseObject
 
 
@@ -61,7 +60,9 @@ def dbengine(app_settings, ini_file):
 def app(app_settings, dbengine):
     return main({}, dbengine=dbengine, **app_settings)
 
-
+@pytest.fixture(scope="session")
+def test_app(app):
+    return webtest.TestApp(app)
 @pytest.fixture
 def tm():
     tm = transaction.TransactionManager(explicit=True)

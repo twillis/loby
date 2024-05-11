@@ -1,5 +1,5 @@
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPUnauthorized
 from pyramid_sqlalchemy import Session
 from .models import User
 
@@ -20,7 +20,7 @@ def login_post_view(request):
         request.session["user"] = user.user_name
         return HTTPFound(location=request.route_url("home"))
 
-    return {"error": "Invalid username or password"}
+    return HTTPUnauthorized("Nope")
 
 
 @view_config(route_name="home", renderer="templates/home.html")
