@@ -18,6 +18,7 @@ def login_post_view(request):
         # Deserialize and validate
         appstruct = schema.deserialize(request.POST)
     except colander.Invalid as e:
+        request.response.status_int = 400
         return {"errors": e.asdict()}
 
     user = Session.query(User).filter_by(user_name=appstruct["username"]).first()
@@ -37,11 +38,7 @@ def home_view(request):
 
 @view_config(route_name="register", renderer="templates/register.html")
 def register_view(request):
-    # Assuming GET requests just show the registration form
-    if request.method == "GET":
-        return {}  # return empty dict if using a templating engine like Jinja2
-    elif request.method == "POST":
-        breakpoint()
+    return {}
 
 
 @view_config(
@@ -69,5 +66,5 @@ def register_post_view(request):
     new_user.set_password(appstruct["password"])
     session.add(new_user)
     session.flush()
-    request.session.flash('Registration successful! You can now log in.')
+    request.session.flash("Registration successful! You can now log in.")
     return HTTPFound(location=request.route_url("login"))

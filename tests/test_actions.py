@@ -17,27 +17,31 @@ def test_login(test_app):
         AssertionError: If any of the conditions tested by the asserts are not met, indicating a failure in login handling.
     """
     # Fetch the login page first to get the form
-    response = test_app.get('/login')
+    response = test_app.get("/login")
     form = response.form  # Get the form object from the response
 
     # Fill out the form fields with incorrect credentials
-    form['username'] = 'testuser'
-    form['password'] = 'testpass'
+    form["username"] = "testuser"
+    form["password"] = "testpass"
 
     # Submit the form and expect a 401 Unauthorized status
-    response = form.submit('submit', status=401)
-    assert 'Invalid username or password' in response.text, "Expected error message for invalid login not present"
+    response = form.submit("submit", status=401)
+    assert (
+        "Invalid username or password" in response.text
+    ), "Expected error message for invalid login not present"
 
     # Fill the form with correct credentials
-    form['username'] = 'admin'
-    form['password'] = 'Password123$'
+    form["username"] = "admin"
+    form["password"] = "Password123$"
 
     # Submit the form and expect a redirection (302), then follow to final page
-    response = form.submit('submit', status=302).follow()
-    assert 'Welcome' in response.text, "Expected welcome message after successful login not present"
+    response = form.submit("submit", status=302).follow()
+    assert (
+        "Welcome" in response.text
+    ), "Expected welcome message after successful login not present"
 
 
-def test_register_action(test_app):
+def test_register_action(test_app, dbsession):
     """
     Tests the registration process of the web application.
 
@@ -47,13 +51,15 @@ def test_register_action(test_app):
     - Optionally, test with invalid data to ensure that validation errors are handled correctly.
 
     """
+    from loby import models
+
     # Define the path for your registration page and the form data
-    register_url = '/register'  # Adjust the URL if necessary
+    register_url = "/register"  # Adjust the URL if necessary
     form_data = {
-        'username': 'newuser',
-        'email': 'newuser@example.com',
-        'password': 'securepassword123',
-        'password_confirm': 'securepassword123',
+        "username": "newuser",
+        "email": "newuser@example.com",
+        "password": "securepassword123",
+        "password_confirm": "securepassword123",
         # Include other fields as necessary
     }
 
@@ -62,17 +68,27 @@ def test_register_action(test_app):
     form = response.form
 
     # Fill out the form fields
-    form['username'] = form_data['username']
-    form['email'] = form_data['email']
-    form['password'] = form_data['password']
-    form['password_confirm'] = form_data['password_confirm']
+    form["username"] = form_data["username"]
+    form["email"] = form_data["email"]
+    form["password"] = form_data["password"]
+    form["password_confirm"] = form_data["password_confirm"]
 
     # Submit the form
-    response = form.submit('submit')
+    response = form.submit("submit")
 
     # Check if the registration was successful (usually a redirect to a login page or user profile)
-    assert response.status_code == 302, "Expected a redirect after successful registration"
+    assert (
+        response.status_code == 302
+    ), "Expected a redirect after successful registration"
 
     # Follow the redirect and check the response
     follow_response = response.follow()
-    assert 'Registration successful' in follow_response.text, "Expected confirmation message not found"
+    assert (
+        "Registration successful" in follow_response.text
+    ), "Expected confirmation message not found"
+    # should be user in database now with username and verified=False
+    assert (
+        dbsession.query(models.User)
+        .filter_by(user_name=form_data["username"], verified=False)
+        .count()
+    ), f"expected user {form_data['username']} with verified=False to be found in the database"
