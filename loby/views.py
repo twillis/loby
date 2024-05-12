@@ -20,7 +20,7 @@ def login_post_view(request):
     except colander.Invalid as e:
         return {"errors": e.asdict()}
 
-    user = Session.query(User).filter_by(user_name=appstruct["username"], verified=True).first()
+    user = Session.query(User).filter_by(user_name=appstruct["username"]).first()
 
     if user and user.check_password(appstruct["password"]):
         request.session["user"] = user.user_name
@@ -53,11 +53,13 @@ def register_post_view(request):
         # Deserialize and validate
         appstruct = schema.deserialize(request.POST)
     except colander.Invalid as e:
+        request.response.status_int = 400
         return {"errors": e.asdict(), "form_data": request.POST}
 
     session = Session()
     user = session.query(User).filter_by(user_name=appstruct["username"]).first()
     if user:
+        request.response.status_int = 400
         return {
             "errors": {"username": "Username already exists"},
             "form_data": request.POST,
@@ -66,6 +68,6 @@ def register_post_view(request):
     new_user = User(user_name=appstruct["username"], email=appstruct["email"])
     new_user.set_password(appstruct["password"])
     session.add(new_user)
-    session.commit()
-
+    session.flush()
+    request.session.flash('Registration successful! You can now log in.')
     return HTTPFound(location=request.route_url("login"))

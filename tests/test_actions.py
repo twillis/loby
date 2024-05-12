@@ -46,8 +46,6 @@ def test_register_action(test_app):
     - Checks that the server responds with a correct redirection after a successful registration.
     - Optionally, test with invalid data to ensure that validation errors are handled correctly.
 
-    Args:
-        test_app (TestApp): The WebTest TestApp instance configured to test the web application.
     """
     # Define the path for your registration page and the form data
     register_url = '/register'  # Adjust the URL if necessary

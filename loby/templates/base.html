@@ -36,6 +36,13 @@
     <!-- Main Content -->
     <main>
         <div class="max-w-6xl mx-auto px-4 py-6">
+        {% if request.session.peek_flash() %}
+            <div>
+                {% for message in request.session.pop_flash() %}
+                    <center><h1>{{ message }}</h1></center>
+                {% endfor %}
+            </div>
+        {% endif %}
             {% block content %}
             <!-- Content will go here -->
             {% endblock %}
