@@ -35,3 +35,46 @@ def test_login(test_app):
     # Submit the form and expect a redirection (302), then follow to final page
     response = form.submit('submit', status=302).follow()
     assert 'Welcome' in response.text, "Expected welcome message after successful login not present"
+
+
+def test_register_action(test_app):
+    """
+    Tests the registration process of the web application.
+
+    This function performs the following tests:
+    - Submits a registration form with valid user data and verifies successful registration.
+    - Checks that the server responds with a correct redirection after a successful registration.
+    - Optionally, test with invalid data to ensure that validation errors are handled correctly.
+
+    Args:
+        test_app (TestApp): The WebTest TestApp instance configured to test the web application.
+    """
+    # Define the path for your registration page and the form data
+    register_url = '/register'  # Adjust the URL if necessary
+    form_data = {
+        'username': 'newuser',
+        'email': 'newuser@example.com',
+        'password': 'securepassword123',
+        'password_confirm': 'securepassword123',
+        # Include other fields as necessary
+    }
+
+    # Fetch the registration page to get the CSRF token if your form requires it
+    response = test_app.get(register_url)
+    form = response.form
+
+    # Fill out the form fields
+    form['username'] = form_data['username']
+    form['email'] = form_data['email']
+    form['password'] = form_data['password']
+    form['password_confirm'] = form_data['password_confirm']
+
+    # Submit the form
+    response = form.submit('submit')
+
+    # Check if the registration was successful (usually a redirect to a login page or user profile)
+    assert response.status_code == 302, "Expected a redirect after successful registration"
+
+    # Follow the redirect and check the response
+    follow_response = response.follow()
+    assert 'Registration successful' in follow_response.text, "Expected confirmation message not found"

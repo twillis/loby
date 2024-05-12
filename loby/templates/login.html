@@ -3,6 +3,13 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+    {% if errors %}
+    <ul class="errors">
+        {% for field, error in errors.items() %}
+        <li>{{ field }}: {{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     <div class="flex justify-center items-center h-screen">
         <form class="w-full max-w-xs" method="POST" action="{{ request.route_url('login') }}">
             <div class="mb-4">

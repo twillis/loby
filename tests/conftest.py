@@ -9,7 +9,7 @@ import pytest
 import transaction
 import webtest
 
-from loby import main
+from loby import main, execute_seed_script
 from loby import models
 import pyramid_sqlalchemy
 Base = pyramid_sqlalchemy.BaseObject
@@ -60,9 +60,6 @@ def dbengine(app_settings, ini_file):
 def app(app_settings, dbengine):
     return main({}, dbengine=dbengine, **app_settings)
 
-@pytest.fixture(scope="session")
-def test_app(app):
-    return webtest.TestApp(app)
 @pytest.fixture
 def tm():
     tm = transaction.TransactionManager(explicit=True)
@@ -78,9 +75,17 @@ def tm():
 def dbsession(dbengine, sql_session):
     return sql_session
 
+@pytest.fixture
+def core_seeds(dbsession):
+    files = [
+        './seeds/admin_user_admin_role.py'
+    ]
+
+    for f in files:
+        execute_seed_script(f, dbsession)
 
 @pytest.fixture
-def testapp(app, tm, dbsession):
+def test_app(app, tm, dbsession, core_seeds):
     # override request.dbsession and request.tm with our own
     # externally-controlled values that are shared across requests but aborted
     # at the end

@@ -1,0 +1,15 @@
+
+  {% if errors %}
+  <ul class="errors">
+      {% for field, error in errors.items() %}
+      <li>{{ field }}: {{ error }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+<form method="post" action="{{ request.route_url('register') }}">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="password" name="password_confirm" placeholder="Password" required>
+    <input type="submit" value="Register">
+</form>
