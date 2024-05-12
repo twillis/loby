@@ -37,9 +37,7 @@ def execute_seed_script(script_path, db_session):
 
     try:
         seed_module.seed(db_session)
-        db_session.commit()  # Commit changes after successful seeding
+        db_session.flush()  # Commit changes after successful seeding
         return True
-    except Exception as e:
-        db_session.rollback()  # Rollback in case of any errors
-        print(f"An error occurred: {e}")
-        return False
+    except Exception as exc:
+        raise Exception(f"error running {script_path}. \n {exc}")

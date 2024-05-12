@@ -12,6 +12,6 @@ def test_make_schema(dbsession):
         schema.deserialize({})
 
 
-def test_user_has_perm(dbsession):
+def test_user_has_perm(dbsession, core_seeds):
     user = dbsession.query(models.User).filter_by(user_name="admin").one()
     assert models.user_has_permission(dbsession, user.id, "users", "edit"), "didnt work"

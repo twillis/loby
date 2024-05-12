@@ -55,7 +55,7 @@ class User(BaseObject):
     user_name = Column(String, unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
-    verified = Column(Boolean, nullable=False)
+    verified = Column(Boolean, nullable=False, default=False)
 
     def set_password(self, password):
         self.password_hash = hashpw(password.encode("utf-8"), gensalt()).decode("utf-8")

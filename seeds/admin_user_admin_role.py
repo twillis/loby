@@ -4,7 +4,7 @@ from loby import models
 
 
 def seed(session):
-    admin_user = models.User(user_name="admin", email="admin@email.com")
+    admin_user = models.User(user_name="admin", email="admin@email.com", verified=True)
     session.add(admin_user)
     admin_user.set_password("Password123$")
 

@@ -26,7 +26,7 @@ def test_login(test_app):
 
     # Submit the form and expect a 401 Unauthorized status
     response = form.submit('submit', status=401)
-    assert 'server could not verify that you are authorized' in response.text, "Expected error message for invalid login not present"
+    assert 'Invalid username or password' in response.text, "Expected error message for invalid login not present"
 
     # Fill the form with correct credentials
     form['username'] = 'admin'

@@ -26,6 +26,7 @@ def login_post_view(request):
         request.session["user"] = user.user_name
         return HTTPFound(location=request.route_url("home"))
 
+    request.response.status_int = 401
     return {"errors": {"login": "Invalid username or password"}}
 
 
