@@ -1,10 +1,10 @@
-from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound, HTTPUnauthorized
+from pyramid.view import view_config, forbidden_view_config
+from pyramid.httpexceptions import HTTPFound, HTTPUnauthorized, HTTPForbidden
 from pyramid_sqlalchemy import Session
 from .models import User
 from .schemas import LoginSchema, RegisterSchema
 import colander
-
+from pyramid.security import remember
 
 @view_config(route_name="login", renderer="templates/login.html", request_method="GET")
 def login_get_view(request):
@@ -24,8 +24,8 @@ def login_post_view(request):
     user = Session.query(User).filter_by(user_name=appstruct["username"]).first()
 
     if user and user.check_password(appstruct["password"]):
-        request.session["user"] = user.user_name
-        return HTTPFound(location=request.route_url("home"))
+        headers = remember(request, str(user.id))
+        return HTTPFound(location=request.route_url("home"), headers=headers)
 
     request.response.status_int = 401
     return {"errors": {"login": "Invalid username or password"}}
@@ -68,3 +68,17 @@ def register_post_view(request):
     session.flush()
     request.session.flash("Registration successful! You can now log in.")
     return HTTPFound(location=request.route_url("login"))
+
+@view_config(route_name='admin.user', renderer='templates/edit_user.html', permission='edit')
+def user_edit_view(request):
+    assert request.authenticated_userid
+    assert request.has_permission("edit")
+    # Assuming the user is trying to edit details here
+    return {"users": Session.query(User).all()}
+
+@forbidden_view_config()
+def custom_forbidden_view(request):
+    # If the user is not authenticated, raise 401 Unauthorized
+    if not request.authenticated_userid:
+        return HTTPUnauthorized()
+    return HTTPForbidden()

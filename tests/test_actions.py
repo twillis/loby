@@ -92,3 +92,31 @@ def test_register_action(test_app, dbsession):
         .filter_by(user_name=form_data["username"], verified=False)
         .count()
     ), f"expected user {form_data['username']} with verified=False to be found in the database"
+
+
+def test_user_admin(test_app, dbsession):
+    """
+    Tests the admin user access to the '/admin/user' route.
+
+    1. Attempts to access '/admin/user' as an anonymous user and expects a 401 Unauthorized.
+    2. Logs in as an admin user and verifies access to '/admin/user' is granted with a 200 OK response.
+    """
+
+    # Step 1: Verify that access as an anonymous user results in a 401 Unauthorized
+    response = test_app.get('/admin/user', status=401)
+
+    # Step 2: Create an admin user if necessary
+
+    # Step 3: Log in as the admin user
+    login_url = "/login"
+    login_form_data = {"username": "admin", "password": "Password123$"}
+    login_response = test_app.post(login_url, login_form_data, status=302)  # Redirect expected after login
+
+    # Step 4: Access the '/admin/user' route as a logged-in admin user
+    response = test_app.get('/admin/user')
+    assert response.status_code == 200, "Admin users should have access to the '/admin/user' page"
+
+    # Check if the page content is as expected (optional)
+    assert "Edit User Details" in response.text, "The page should contain user editing capabilities"
+
+    # Additional checks can include verifying session or specific UI elements if necessary
