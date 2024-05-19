@@ -103,28 +103,38 @@ class Resource(BaseObject):
     )
 
 
-def user_has_permission(session: Session, user_id: str, resource_name: str, permission_name: str) -> bool:
-    user = session.query(User).options(
-        joinedload(User.roles)
-        .joinedload(Role.permissions)
-        .joinedload(Permission.resources)
-    ).filter(User.id == user_id).one_or_none()
+def user_has_permission(
+    session: Session, user_id: str, resource_name: str, permission_name: str
+) -> bool:
+    user = (
+        session.query(User)
+        .options(
+            joinedload(User.roles)
+            .joinedload(Role.permissions)
+            .joinedload(Permission.resources)
+        )
+        .filter(User.id == user_id, Permission.allow == True)
+        .one_or_none()
+    )
 
     if not user:
         return False
 
     # Split resource_name into segments for matching
-    resource_segments = resource_name.split('.')
+    resource_segments = resource_name.split(".")
     permissions = []
 
     for role in user.roles:
         for permission in role.permissions:
             for resource in permission.resources:
-                resource_segments_check = resource.name.split('.')
+                resource_segments_check = resource.name.split(".")
                 if len(resource_segments_check) > len(resource_segments):
                     continue
 
-                if resource_segments[:len(resource_segments_check)] == resource_segments_check:
+                if (
+                    resource_segments[: len(resource_segments_check)]
+                    == resource_segments_check
+                ):
                     permissions.append((len(resource_segments_check), permission.allow))
 
     if not permissions:
