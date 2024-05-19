@@ -2,7 +2,7 @@
 from pyramid_sqlalchemy import BaseObject
 from sqlalchemy import Column, String, UUID, ForeignKey, Table, Boolean
 from bcrypt import hashpw, gensalt, checkpw
-from sqlalchemy.orm import relationship, Session, joinedload
+from sqlalchemy.orm import relationship, Session, joinedload, aliased
 import uuid
 
 user_role_table = Table(
@@ -106,6 +106,7 @@ class Resource(BaseObject):
 def user_has_permission(
     session: Session, user_id: str, resource_name: str, permission_name: str
 ) -> bool:
+
     user = (
         session.query(User)
         .options(

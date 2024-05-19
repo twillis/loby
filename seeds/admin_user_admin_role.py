@@ -11,7 +11,7 @@ def seed(session):
     role = models.Role(name="Admin")
     session.add(role)
 
-    permission = models.Permission(name="edit")
+    permission = models.Permission(name="edit", allow=True)
     session.add(permission)
 
     resource = models.Resource(name="users")

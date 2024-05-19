@@ -25,11 +25,13 @@
                     <a href="#" class="flex items-center py-5 px-2 text-gray-700 hover:text-gray-900 font-bold">Logo</a>
                     <div class="hidden md:flex items-center space-x-1">
                         <a href="/" class="py-5 px-3 text-primary hover:text-accent">Home</a>
-                        <a href="/login" class="py-5 px-3 text-primary hover:text-accent">Login</a>
                         <a href="/about" class="py-5 px-3 text-primary hover:text-accent">About</a>
                         <a href="/contact" class="py-5 px-3 text-primary hover:text-accent">Contact</a>
                     </div>
                     <div class="hidden md:flex items-center space-x-1">
+                        {% if request.can_access('admin.user') %}
+                            <a href="{{ request.route_url('admin.user') }}" class="py-5 px-3 text-primary hover:text-accent">Admin Users</a>
+                        {% endif %}
                       {% if request.user %}
                           <span class="py-5 px-3 text-primary">Welcome, {{ request.user.user_name }}</span>
                           <a href="{{ request.route_url('logout') }}" class="py-5 px-3 text-primary hover:text-accent">Logout</a>

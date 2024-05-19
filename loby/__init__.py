@@ -13,6 +13,24 @@ def get_session(request):
     return Session()
 
 
+def can_access(request, resource_name):
+    from . import models
+
+    user_id = request.authenticated_userid
+    if user_id is None:
+        return False
+
+    session = request.dbsession
+    return models.user_has_permission(session, user_id, resource_name, "view")
+
+
+def add_can_access(request):
+    def _can_access(resource_name):
+        return can_access(request, resource_name)
+
+    return _can_access
+
+
 class RootFactory:
     def __init__(self, request):
         self.request = request
@@ -111,7 +129,8 @@ def main(global_config, **settings):
         config.scan(".views")
         config.add_request_method(security_policy.identity, "user", reify=True)
         config.add_request_method(get_session, "dbsession", reify=True)
-    return config.make_wsgi_app()
+        config.add_request_method(add_can_access, "can_access", reify=True)
+        return config.make_wsgi_app()
 
 
 def execute_seed_script(script_path, db_session):
