@@ -70,11 +70,45 @@ def register_post_view(request):
     return HTTPFound(location=request.route_url("login"))
 
 @view_config(route_name='admin.user', renderer='templates/edit_user.html', permission='edit')
-def user_edit_view(request):
+def user_index_view(request):
     assert request.authenticated_userid
     assert request.has_permission("edit")
     # Assuming the user is trying to edit details here
     return {"users": Session.query(User).all()}
+
+
+@view_config(route_name='admin.user.edit', renderer='templates/edit_user.html', request_method='POST', permission='edit')
+@view_config(route_name='admin.user.create', renderer='templates/user_form.html', request_method='POST', permission='edit')
+def user_save_view(request):
+    session = Session()
+    user_id = request.matchdict.get('user_id', None)
+    user = session.query(User).filter_by(id=user_id).first() if user_id else User()
+    user.user_name = request.params['user_name']
+    user.email = request.params['email']
+    user.verified = request.params['verified'] == 'true'
+    password = request.params.get("password", None) if user else request.params["password"]
+
+    if password:
+        user.set_password(password)
+
+    if not user_id:  # This means it's a new user
+        session.add(user)
+
+    session.flush()
+    return HTTPFound(location=request.route_url("admin.user"))
+
+
+
+@view_config(route_name='admin.user.edit', renderer='templates/user_form.html', request_method='GET', permission='edit')
+def user_edit_form(request):
+    user_id = request.matchdict.get("user_id")
+    user = Session().query(User).filter_by(id=user_id).one()
+    return {"user": user, "errors": {}}
+
+@view_config(route_name='admin.user.create', renderer='templates/user_form.html', request_method='GET', permission='edit')
+def user_create_form(request):
+    return {"user": None, "errors": {}}
+
 
 @forbidden_view_config()
 def custom_forbidden_view(request):

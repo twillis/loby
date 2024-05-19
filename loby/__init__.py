@@ -97,6 +97,7 @@ def main(global_config, **settings):
         config.add_route("admin.user", "/admin/user")
         config.add_route("admin.user.create", "/admin/user/create")
         config.add_route("admin.user.edit", "/admin/user/{user_id}")
+        config.add_route("admin.user.save", "/admin/user/{user_id}/save")
         config.scan(".views")
     return config.make_wsgi_app()
 
