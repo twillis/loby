@@ -29,6 +29,14 @@
                         <a href="/about" class="py-5 px-3 text-primary hover:text-accent">About</a>
                         <a href="/contact" class="py-5 px-3 text-primary hover:text-accent">Contact</a>
                     </div>
+                    <div class="hidden md:flex items-center space-x-1">
+                      {% if request.user %}
+                          <span class="py-5 px-3 text-primary">Welcome, {{ request.user.user_name }}</span>
+                          <a href="{{ request.route_url('logout') }}" class="py-5 px-3 text-primary hover:text-accent">Logout</a>
+                      {% else %}
+                          <a href="{{ request.route_url('login') }}" class="py-5 px-3 text-primary hover:text-accent">Login</a>
+                      {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

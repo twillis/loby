@@ -7,32 +7,45 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import Allow, Authenticated, Allowed, Denied, Everyone
 
 
+def get_session(request):
+    from pyramid_sqlalchemy import Session
+
+    return Session()
+
+
 class RootFactory:
     def __init__(self, request):
         self.request = request
         self.__acl__ = self.get_acl()
 
     def get_acl(self):
-        acl = [(Allow, Everyone, 'view')]  # default to allow view to everyone if that's your policy
+        acl = [
+            (Allow, Everyone, "view")
+        ]  # default to allow view to everyone if that's your policy
         from pyramid_sqlalchemy import Session
         from . import models
+
         session = Session()
 
         user_id = self.request.authenticated_userid
         if user_id:
-            user_roles = session.query(models.Role).join(models.Role.users).filter(models.User.id == user_id).all()
+            user_roles = (
+                session.query(models.Role)
+                .join(models.Role.users)
+                .filter(models.User.id == user_id)
+                .all()
+            )
 
             for role in user_roles:
                 for permission in role.permissions:
-                    acl.append((Allow, 'role:' + role.name, permission.name))
+                    acl.append((Allow, "role:" + role.name, permission.name))
 
         return acl
 
 
 class LobySecurityPolicy:
-    def __init__(self, authn_policy, authz_policy):
+    def __init__(self, authn_policy):
         self.authn_policy = authn_policy
-        self.authz_policy = authz_policy
 
     def identity(self, request):
         """Return app-specific user object."""
@@ -60,30 +73,26 @@ class LobySecurityPolicy:
         return self.authn_policy.forget(request)
 
     def permits(self, request, context, permission):
-        """Allow access to everything if signed in."""
+        from . import models
 
-        identity = self.identity(request)
-
-        if identity is not None:
-            return Allowed("User is signed in.")
-
-        else:
-            return Denied("User is not signed in.")
+        return models.user_has_permission(
+            request.dbsession,
+            self.authenticated_userid(request),
+            context.request.matched_route.name,
+            permission,
+        )
 
 
 def main(global_config, **settings):
     """Entry point for application."""
     sig_secret = settings.get("sig_secret", "itsaseekreet")
     session_factory = SignedCookieSessionFactory(sig_secret)
-    authorization_policy = ACLAuthorizationPolicy()
     authentication_policy = AuthTktAuthenticationPolicy(sig_secret, hashalg="sha512")
-    security_policy = LobySecurityPolicy(authentication_policy, authorization_policy)
+    security_policy = LobySecurityPolicy(authentication_policy)
     with Configurator(
         settings=settings,
         session_factory=session_factory,
         root_factory=RootFactory,
-        # authorization_policy=authorization_policy,
-        # authentication_policy=authentication_policy,
         security_policy=security_policy,
     ) as config:
         config.include("pyramid_tm")
@@ -93,12 +102,15 @@ def main(global_config, **settings):
         config.add_static_view(name="static", path="loby:static")
         config.add_route("home", "/")
         config.add_route("login", "/login")
+        config.add_route("logout", "/logout")
         config.add_route("register", "/register")
         config.add_route("admin.user", "/admin/user")
         config.add_route("admin.user.create", "/admin/user/create")
         config.add_route("admin.user.edit", "/admin/user/{user_id}")
         config.add_route("admin.user.save", "/admin/user/{user_id}/save")
         config.scan(".views")
+        config.add_request_method(security_policy.identity, "user", reify=True)
+        config.add_request_method(get_session, "dbsession", reify=True)
     return config.make_wsgi_app()
 
 

@@ -2,7 +2,7 @@
 from pyramid_sqlalchemy import BaseObject
 from sqlalchemy import Column, String, UUID, ForeignKey, Table, Boolean
 from bcrypt import hashpw, gensalt, checkpw
-from sqlalchemy.orm import relationship, Session
+from sqlalchemy.orm import relationship, Session, joinedload
 import uuid
 
 user_role_table = Table(
@@ -90,6 +90,7 @@ class Permission(BaseObject):
     resources = relationship(
         "Resource", secondary=resource_permission_table, back_populates="permissions"
     )
+    allow = Column(Boolean, nullable=False)  # True for allow, False for deny
 
 
 class Resource(BaseObject):
@@ -102,19 +103,69 @@ class Resource(BaseObject):
     )
 
 
-def user_has_permission(
-    session: Session, user_id: str, resource_name: str, permission_name: str
-) -> bool:
-    return (
-        session.query(User)
-        .join(User.roles)
-        .join(Role.permissions)
-        .join(Permission.resources)
-        .filter(
-            User.id == user_id,
-            Resource.name == resource_name,
-            Permission.name == permission_name,
-        )
-        .count()
-        > 0
-    )
+def user_has_permission(session: Session, user_id: str, resource_name: str, permission_name: str) -> bool:
+    user = session.query(User).options(
+        joinedload(User.roles)
+        .joinedload(Role.permissions)
+        .joinedload(Permission.resources)
+    ).filter(User.id == user_id).one_or_none()
+
+    if not user:
+        return False
+
+    # Split resource_name into segments for matching
+    resource_segments = resource_name.split('.')
+    permissions = []
+
+    for role in user.roles:
+        for permission in role.permissions:
+            for resource in permission.resources:
+                resource_segments_check = resource.name.split('.')
+                if len(resource_segments_check) > len(resource_segments):
+                    continue
+
+                if resource_segments[:len(resource_segments_check)] == resource_segments_check:
+                    permissions.append((len(resource_segments_check), permission.allow))
+
+    if not permissions:
+        return False
+
+    # Sort by specificity (length) and get the most specific permission
+    permissions.sort(key=lambda x: x[0], reverse=True)
+    most_specific_permission = permissions[0][1]
+
+    return most_specific_permission
+
+
+"""
+new permission strategy
+
+
+
+
+resource_name should match to a route name with caveats...
+
+given route name admin.users.create and admin.user.edit
+
+I can Allow or Deny a permission to a Role by specifying a resource_name as any of the following
+
+Allow,"admin.user.create"
+Allow,"admin.user.*"
+Allow,"admin.*"
+Allow,"*"
+
+in the case that a user has been granted and denied a permission on a resource the permission that wins is the most specific one
+
+given
+Allow,"admin.user"
+Deny, "admin.user.create"
+
+in this case the user is denied access to admin.user.create but is allowed to list the user list view and admin.users.update
+given
+Deny,"admin.user"
+Allow "admin.user.update"
+
+would indicate that the user cannot see the user list, but is allowed access to update users.
+
+I need changes to the existing model and a new implementation of user_has_permission based on these new requirements
+"""
