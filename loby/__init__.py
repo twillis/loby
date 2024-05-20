@@ -122,10 +122,26 @@ def main(global_config, **settings):
         config.add_route("login", "/login")
         config.add_route("logout", "/logout")
         config.add_route("register", "/register")
+       #
+       # Admin routes
+        config.add_route("admin", "/admin")
         config.add_route("admin.user", "/admin/user")
         config.add_route("admin.user.create", "/admin/user/create")
         config.add_route("admin.user.edit", "/admin/user/{user_id}")
         config.add_route("admin.user.save", "/admin/user/{user_id}/save")
+        config.add_route("admin.roles", "/admin/roles")
+        config.add_route("admin.roles.create", "/admin/roles/create")
+        config.add_route("admin.roles.edit", "/admin/roles/{role_id}")
+        config.add_route("admin.permissions", "/admin/permissions")
+        config.add_route("admin.permissions.create", "/admin/permissions/create")
+        config.add_route("admin.permissions.edit", "/admin/permissions/{permission_id}")
+        config.add_route("admin.resources", "/admin/resources")
+        config.add_route("admin.resources.create", "/admin/resources/create")
+        config.add_route("admin.resources.edit", "/admin/resources/{resource_id}")
+
+        # API Routes
+        config.add_route("admin.api.permissions", "/api/permissions")
+        config.add_route("admin.api.roles", "/api/roles")
         config.scan(".views")
         config.add_request_method(security_policy.identity, "user", reify=True)
         config.add_request_method(get_session, "dbsession", reify=True)

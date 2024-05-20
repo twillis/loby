@@ -8,11 +8,18 @@
 
     <link rel="stylesheet" href="{{ request.static_url('loby:static/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Add this to your <head> section -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
 
     <!-- Additional CSS -->
     {% block styles %}
     <style>
-        /* Custom styles */
+    <style>
+        .bootstrap-tagsinput {
+            width: 100%;
+        }
+    </style>
     </style>
     {% endblock %}
 </head>
