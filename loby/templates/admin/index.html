@@ -9,6 +9,7 @@
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <h2 class="text-xl font-semibold mb-4">Admin</h2>
                 <ul>
+                    <li><a href="{{ request.route_url('admin.user') }}" class="text-blue-500 hover:text-blue-800">Users</a></li>
                     <li><a href="{{ request.route_url('admin.roles') }}" class="text-blue-500 hover:text-blue-800">Roles</a></li>
                     <li><a href="{{ request.route_url('admin.permissions') }}" class="text-blue-500 hover:text-blue-800">Permissions</a></li>
                     <li><a href="{{ request.route_url('admin.resources') }}" class="text-blue-500 hover:text-blue-800">Resources</a></li>

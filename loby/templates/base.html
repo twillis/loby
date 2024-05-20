@@ -37,7 +37,7 @@
                     </div>
                     <div class="hidden md:flex items-center space-x-1">
                       {% if request.can_access('admin.user') %}
-                          <a href="{{ request.route_url('admin.user') }}" class="py-5 px-3 text-primary hover:text-accent">Admin Users</a>
+                          <a href="{{ request.route_url('admin') }}" class="py-5 px-3 text-primary hover:text-accent">Admin</a>
                       {% endif %}
                       {% if request.user %}
                           <span class="py-5 px-3 text-primary">Welcome, {{ request.user.user_name }}</span>

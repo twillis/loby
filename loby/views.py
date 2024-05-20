@@ -82,7 +82,7 @@ def register_post_view(request):
 
 
 @view_config(
-    route_name="admin.user", renderer="templates/edit_user.html", permission="edit"
+    route_name="admin.user", renderer="templates/admin/users/index.html", permission="edit"
 )
 def user_index_view(request):
     assert request.authenticated_userid
@@ -93,13 +93,13 @@ def user_index_view(request):
 
 @view_config(
     route_name="admin.user.edit",
-    renderer="templates/edit_user.html",
+    renderer="templates/admin/users/index.html",
     request_method="POST",
     permission="edit",
 )
 @view_config(
     route_name="admin.user.create",
-    renderer="templates/user_form.html",
+    renderer="templates/admin/users/form.html",
     request_method="POST",
     permission="edit",
 )
@@ -126,7 +126,7 @@ def user_save_view(request):
 
 @view_config(
     route_name="admin.user.edit",
-    renderer="templates/user_form.html",
+    renderer="templates/admin/users/form.html",
     request_method="GET",
     permission="edit",
 )
@@ -138,7 +138,7 @@ def user_edit_form(request):
 
 @view_config(
     route_name="admin.user.create",
-    renderer="templates/user_form.html",
+    renderer="templates/admin/users/form.html",
     request_method="GET",
     permission="edit",
 )
@@ -146,9 +146,7 @@ def user_create_form(request):
     return {"user": None, "errors": {}}
 
 
-@view_config(
-    route_name="admin", renderer="templates/admin/index.html"
-)
+@view_config(route_name="admin", renderer="templates/admin/index.html", permission="edit")
 def admin_index(request):
     return {}
 
@@ -279,15 +277,21 @@ def admin_resources_edit(request):
 # In your views_admin.py or another appropriate views file
 @view_config(route_name="admin.api.permissions", renderer="json", permission="edit")
 def api_permissions(request):
-    term = request.params.get('term', '')
-    permissions = request.dbsession.query(Permission).filter(Permission.name.ilike(f'%{term}%')).all()
-    return [{'id': p.id, 'name': p.name} for p in permissions]
+    term = request.params.get("term", "")
+    permissions = (
+        request.dbsession.query(Permission)
+        .filter(Permission.name.ilike(f"%{term}%"))
+        .all()
+    )
+    return [{"id": p.id, "name": p.name} for p in permissions]
+
 
 @view_config(route_name="admin.api.roles", renderer="json", permission="edit")
 def api_roles(request):
-    term = request.params.get('term', '')
-    roles = request.dbsession.query(Role).filter(Role.name.ilike(f'%{term}%')).all()
-    return [{'id': r.id, 'name': r.name} for r in roles]
+    term = request.params.get("term", "")
+    roles = request.dbsession.query(Role).filter(Role.name.ilike(f"%{term}%")).all()
+    return [{"id": r.id, "name": r.name} for r in roles]
+
 
 @forbidden_view_config()
 def custom_forbidden_view(request):

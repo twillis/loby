@@ -1,0 +1,29 @@
+{% extends "../index.html" %}
+
+{% block admin_content %}
+<h1>Resources</h1>
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <table class="table-auto w-full mb-6">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="px-4 py-2 text-left">Resource Name</th>
+                <th class="px-4 py-2 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for resource in resources %}
+            <tr>
+                <td class="border px-4 py-2">{{ resource.name }}</td>
+                <td class="border px-4 py-2">
+                    <a href="{{ request.route_url('admin.resources.edit', resource_id=resource.id) }}" class="text-blue-500 hover:text-blue-800">Edit</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ request.route_url('admin.resources.create') }}"
+       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Create New Resource
+    </a>
+</div>
+{% endblock %}
